@@ -24,10 +24,12 @@ This installs GLFW via Homebrew (macOS) or `apt` (Debian/Ubuntu).
 ### Build & run
 
 ```bash
-make assets   # generate unicorn.bmp (+ cube.obj) if missing
+make assets   # generate fallback textures (+ cube.obj) if missing
 make
 ./scop resources/42.obj
 ```
+
+Default texture: `resources/kittens.bmp` (24-bit BMP). Alternatives: `unicorn.bmp`.
 
 Official subject resources live in `resources/` (`42.obj`, `teapot.obj`, `teapot2.obj`).
 

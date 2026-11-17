@@ -141,7 +141,7 @@ int main(int argc, char** argv) {
 	printHelp(argv[0]);
 
 	const std::string objPath = (argc > 1) ? argv[1] : "resources/42.obj";
-	const std::string texPath = "resources/unicorn.bmp";
+	const std::string texPath = "resources/kittens.bmp";
 
 	if (!glfwInit()) {
 		std::cerr << "Failed to init GLFW\n";
