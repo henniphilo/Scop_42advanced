@@ -1,0 +1,4 @@
+scop
+*.o
+.DS_Store
+*.dSYM/
