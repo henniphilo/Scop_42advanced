@@ -1,8 +1,11 @@
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <string>
 
-#define GLFW_INCLUDE_NONE
+#ifndef GLFW_INCLUDE_NONE
+# define GLFW_INCLUDE_NONE
+#endif
 #include <GLFW/glfw3.h>
 
 #if defined(__APPLE__)
@@ -169,8 +172,8 @@ int main(int argc, char** argv) {
 	framebufferSizeCallback(window, fbw, fbh);
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	// OBJ winding is often inconsistent (42 logo / teapot) — culling would drop faces.
+	glDisable(GL_CULL_FACE);
 	glClearColor(0.12f, 0.12f, 0.14f, 1.f);
 
 	MeshData meshData;
@@ -205,14 +208,20 @@ int main(int argc, char** argv) {
 	const float extent = length(meshData.maxBounds - meshData.minBounds);
 	const float camDist = std::max(extent * 1.6f, 3.f);
 
-	// Face the camera: official 42.obj is thin on X (logo in YZ). Prefer that axis toward +Z.
+	// Only auto-orient clearly flat models (e.g. 42 logo). Teapot is shortest on Y
+	// but not flat — tipping it 90° would stand it on the spout.
 	{
 		const Vec3 size = meshData.maxBounds - meshData.minBounds;
-		const float pi2 = 1.57079632679f;
-		if (size.x <= size.y && size.x <= size.z)
-			gState.initialRotY = -pi2;
-		else if (size.y <= size.x && size.y <= size.z)
-			gState.initialRotX = pi2;
+		float axes[3] = {size.x, size.y, size.z};
+		std::sort(axes, axes + 3);
+		const bool flat = axes[1] > 1e-6f && (axes[0] / axes[1]) < 0.35f;
+		if (flat) {
+			const float pi2 = 1.57079632679f;
+			if (size.x <= size.y && size.x <= size.z)
+				gState.initialRotY = -pi2;
+			else if (size.y <= size.x && size.y <= size.z)
+				gState.initialRotX = pi2;
+		}
 		gState.resetTransform();
 	}
 

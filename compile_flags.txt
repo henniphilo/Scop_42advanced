@@ -1,0 +1,7 @@
+-std=c++17
+-Wall
+-Wextra
+-Iinclude
+-I/opt/homebrew/include
+-DGL_SILENCE_DEPRECATION
+-DGLFW_INCLUDE_NONE
